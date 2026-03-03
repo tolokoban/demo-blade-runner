@@ -74,5 +74,6 @@
         "webpack-dev-server": "^5.2.3",
         "webpack-shell-plugin-next": "^2.3.3",
         "workbox-webpack-plugin": "^7.3.0"
-    }
+    },
+    "port": 17845
 }

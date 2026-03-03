@@ -30,8 +30,8 @@ export function useGameHandler() {
 			transfo: {
 				position: [0, 0, 0.1],
 			},
-			far: 500,
-			near: 0.1,
+			far: 400,
+			near: 10,
 			fovy: tgdCalcDegToRad(30),
 			zoom: 0.1,
 		});

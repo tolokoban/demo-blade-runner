@@ -49,15 +49,16 @@ export class MaterialFog extends TgdMaterial {
 			uniTime: "float",
 		};
 		const fragmentShaderCode: TgdCodeBloc = [
+            // "vec4 RED = vec4(1, 0, 0, 1);",
+            // "vec4 GRN = vec4(0, 1, 0, 1);",
 			"vec3 N = normalize(varNormal);",
 			"vec3 L = normalize(varPosition.xyz - uniCameraPosition);",
 			"vec3 R = reflect(L, N);",
 			"vec3 color = texture(texAmbient, R).rgb;",
 			"color = pow(color, vec3(uniSpecularExponent));",
 			"color *= uniSpecularIntensity;",
-			// "color = varFog > 0.9 ? vec3(0, 1, 0) : vec3(1, 0, 0);",
-			"float fog = varFog + .2 * perlinNoise(vec3(gl_FragCoord.xy * .005, uniTime));",
-			"fog = clamp(fog, 0.0, 1.0);",
+            "float fog = pow(gl_FragCoord.z, 12.0);",
+			"fog += .2 * perlinNoise(vec3(gl_FragCoord.xy * .005, uniTime));",
 			"vec4 final = mix(",
 			[
 				"vec4(color, 1) * texture(texColor, varUV),",
@@ -65,20 +66,19 @@ export class MaterialFog extends TgdMaterial {
 				"fog",
 			],
 			");",
+            // "final = fog > .5 ? GRN : RED;",
 			"return final;",
 		];
 		const varyings: { [name: string]: WebglAttributeType } = {
 			varUV: "vec2",
 			varNormal: "vec3",
 			varPosition: "vec4",
-			varFog: "float",
 		};
 		const vertexShaderCode = () => {
 			const code: TgdCodeBloc = [
 				`varUV = ${this.attUV};`,
 				`varNormal = mat3(uniTransfoMatrix) * ${this.attNormal};`,
 				`varPosition = uniTransfoMatrix * ${this.attPosition};`,
-				"varFog = clamp(mapRange(gl_Position.w, 50.0, 200.0, 0.0, 1.0), 0.0, 1.0);",
 			];
 			return code;
 		};
